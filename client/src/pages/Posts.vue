@@ -10,13 +10,11 @@ const userStore = useUserStore();
 const posts = ref([]);
 const isLoading = ref(true);
 
-// Modal refs
 const deleteModalRef = ref(null);
 const notifModalRef = ref(null);
 let deleteModalInstance = null;
 let notifModalInstance = null;
 
-// State
 const postToDelete = ref(null);
 const notif = ref({ type: 'success', title: '', message: '' });
 
@@ -131,8 +129,8 @@ function handleReadMore(postId) {
     </div>
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-      <h2>Posts</h2>
-      <RouterLink to="/addPost" class="btn btn-primary" v-if="userStore.user?.id">
+      <h2>Blog Posts</h2>
+      <RouterLink to="/addPost" class="btn btn-primary" v-if="userStore.isLoggedIn">
         Create Post
       </RouterLink>
     </div>
@@ -169,7 +167,7 @@ function handleReadMore(postId) {
               Read More
             </button>
 
-            <div v-if="userStore.user?.id === post.authorId || userStore.user?.isAdmin" class="d-flex gap-2">
+            <div v-if="userStore.isLoggedIn && (userStore.user?.id === post.authorId || userStore.isAdmin)" class="d-flex gap-2">
               <RouterLink
                 v-if="userStore.user?.id === post.authorId && !userStore.isAdmin"
                 :to="`/posts/${post._id}/edit`"
