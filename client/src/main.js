@@ -6,7 +6,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 
-import 'bootswatch/dist/cyborg/bootstrap.min.css'       
+import 'bootswatch/dist/sketchy/bootstrap.min.css'       
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'           
 import 'notyf/notyf.min.css'                                
 
