@@ -9,14 +9,22 @@ import { useUserStore } from '@/stores/user';
 const notyf = new Notyf();
 const router = useRouter();
 const userStore = useUserStore();
+
 const email = ref('');
 const password = ref('');
 
+const isPasswordValid = computed(() => password.value.length >= 8);
+
 const isActive = computed(() => {
-  return email.value !== '' && password.value !== '';
+  return email.value !== '' && password.value !== '' && isPasswordValid.value;
 });
 
 function authenticate() {
+  if (!isPasswordValid.value) {
+    notyf.error('Password must be at least 8 characters.');
+    return;
+  }
+
   axios.post('https://s87-s89-backend.onrender.com/users/login', {
     email: email.value,
     password: password.value
@@ -58,7 +66,7 @@ function retrieveUserDetails(token) {
 
 onMounted(() => {
   if (userStore.user?.id) {
-    router.push('/posts'); 
+    router.push('/posts');
   }
 });
 </script>
@@ -69,7 +77,6 @@ onMounted(() => {
       <div class="card-body p-4">
         <h2 class="card-title text-center mb-4">Login</h2>
         <form @submit.prevent="authenticate">
-
           <div class="mb-3">
             <label for="email" class="form-label">Email address</label>
             <input
@@ -81,7 +88,6 @@ onMounted(() => {
               v-model="email"
             />
           </div>
-
           <div class="mb-3">
             <label for="password" class="form-label">Password</label>
             <input
@@ -91,9 +97,18 @@ onMounted(() => {
               placeholder="Password"
               required
               v-model="password"
+              :class="{
+                'is-invalid': password.length > 0 && !isPasswordValid,
+                'is-valid': password.length > 0 && isPasswordValid
+              }"
             />
+            <div v-if="password.length > 0 && !isPasswordValid" class="invalid-feedback">
+              Password must be at least 8 characters.
+            </div>
+            <div v-else class="form-text text-muted">
+              Password must be at least 8 characters.
+            </div>
           </div>
-
           <div class="d-grid mt-4">
             <button
               type="submit"
@@ -103,13 +118,11 @@ onMounted(() => {
               Log In
             </button>
           </div>
-
           <div class="text-center mt-3">
             <small>Don't have an account?
               <RouterLink to="/register">Register here</RouterLink>
             </small>
           </div>
-
         </form>
       </div>
     </div>
